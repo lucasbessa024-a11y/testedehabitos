@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Teste de Hábitos</title>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+    </style>
+  <style>@view-transition { navigation: auto; } </style>
+ </head>
+ <body class="min-h-full bg-gradient-to-br from-slate-50 via-purple-50 to-rose-50 font-sans">
+  <div class="min-h-full"><!-- Header -->
+   <header class="bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 shadow-xl border-b border-purple-800/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="flex justify-between items-center py-6">
+      <div class="flex items-center space-x-8">
+       <h1 id="titulo-sistema" class="text-3xl font-bold text-white">Sistema de Teste de Hábitos</h1><!-- Navigation Tabs -->
+       <nav class="flex space-x-8"><button id="tab-cadastro" class="py-2 px-4 border-b-2 border-white font-medium text-sm text-white transition-all duration-300"> Cadastro de Pacientes </button> <button id="tab-resultados" class="py-2 px-4 border-b-2 border-transparent font-medium text-sm text-white hover:text-gray-200 hover:border-white/50 transition-all duration-300"> Resultados </button> <button id="tab-diagnosticos" class="py-2 px-4 border-b-2 border-transparent font-medium text-sm text-white hover:text-gray-200 hover:border-white/50 transition-all duration-300"> Diagnósticos </button>
+       </nav>
+      </div>
+     </div>
+    </div>
+   </header><!-- Main Content -->
+   <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8"><!-- Cadastro Tab -->
+    <div id="content-cadastro" class="px-4 py-6 sm:px-0">
+     <div class="bg-white/80 backdrop-blur-sm overflow-hidden shadow-2xl rounded-2xl border border-purple-100/50">
+      <div class="px-4 py-5 sm:p-6">
+       <div id="cadastro-form">
+        <h2 class="text-2xl font-bold bg-gradient-to-r from-slate-700 to-purple-700 bg-clip-text text-transparent mb-6">Cadastro de Paciente</h2>
+        <form id="form-paciente" class="space-y-6">
+         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div><label for="nome" class="block text-sm font-semibold text-slate-700 mb-2">Nome Completo</label> <input type="text" id="nome" name="nome" required class="mt-1 block w-full border-purple-200 rounded-xl shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm px-4 py-3 border bg-white/70 backdrop-blur-sm transition-all duration-300">
+          </div>
+          <div><label for="idade" class="block text-sm font-semibold text-slate-700 mb-2">Idade</label> <input type="number" id="idade" name="idade" required min="1" max="120" class="mt-1 block w-full border-purple-200 rounded-xl shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm px-4 py-3 border bg-white/70 backdrop-blur-sm transition-all duration-300">
+          </div>
+         </div>
+         <div><label for="sexo" class="block text-sm font-semibold text-slate-700 mb-2">Sexo</label> <select id="sexo" name="sexo" required class="mt-1 block w-full border-purple-200 rounded-xl shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm px-4 py-3 border bg-white/70 backdrop-blur-sm transition-all duration-300"> <option value="">Selecione...</option> <option value="Masculino">Masculino</option> <option value="Feminino">Feminino</option> <option value="Outro">Outro</option> </select>
+         </div>
+         <div><button type="submit" id="btn-cadastrar" class="w-full flex justify-center py-3 px-6 border border-transparent rounded-xl shadow-lg text-sm font-semibold text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-300 transform hover:scale-105"> Cadastrar Paciente </button>
+         </div>
+        </form>
+       </div><!-- Teste de Hábitos -->
+       <div id="teste-habitos" class="hidden">
+        <div class="border-t border-purple-200/50 pt-6 mt-6">
+         <h3 class="text-xl font-bold bg-gradient-to-r from-slate-700 to-purple-700 bg-clip-text text-transparent mb-4">Teste de Hábitos</h3>
+         <p id="instrucoes-teste" class="text-sm text-slate-600 mb-6 bg-purple-50/50 p-4 rounded-xl border border-purple-100">Responda as perguntas sobre seus hábitos diários</p>
+         <form id="form-teste" class="space-y-6">
+          <div id="questoes-container"></div>
+          <div><button type="submit" id="btn-finalizar-teste" class="w-full flex justify-center py-3 px-6 border border-transparent rounded-xl shadow-lg text-sm font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-300 transform hover:scale-105"> Finalizar Teste </button>
+          </div>
+         </form>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div><!-- Resultados Tab -->
+    <div id="content-resultados" class="hidden px-4 py-6 sm:px-0">
+     <div class="bg-white/80 backdrop-blur-sm overflow-hidden shadow-2xl rounded-2xl border border-purple-100/50">
+      <div class="px-4 py-5 sm:p-6">
+       <h2 class="text-2xl font-bold bg-gradient-to-r from-slate-700 to-purple-700 bg-clip-text text-transparent mb-6">Resultados dos Testes</h2>
+       <div class="mb-6"><label for="select-paciente" class="block text-sm font-semibold text-slate-700 mb-2">Escolha o Paciente</label> <select id="select-paciente" class="block w-full border-purple-200 rounded-xl shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm px-4 py-3 border bg-white/70 backdrop-blur-sm transition-all duration-300"> <option value="">Selecione um paciente...</option> </select>
+       </div>
+       <div id="resultado-paciente" class="hidden">
+        <div class="bg-gradient-to-br from-purple-50/50 to-pink-50/50 rounded-2xl p-6 border border-purple-100/50 backdrop-blur-sm">
+         <h3 class="text-xl font-bold bg-gradient-to-r from-slate-700 to-purple-700 bg-clip-text text-transparent mb-4">Informações do Paciente</h3>
+         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-6">
+          <div class="bg-white/60 rounded-xl p-4 border border-purple-100/50">
+           <p class="text-sm font-semibold text-slate-600">Nome</p>
+           <p id="resultado-nome" class="mt-1 text-sm font-bold text-slate-800"></p>
+          </div>
+          <div class="bg-white/60 rounded-xl p-4 border border-purple-100/50">
+           <p class="text-sm font-semibold text-slate-600">Idade</p>
+           <p id="resultado-idade" class="mt-1 text-sm font-bold text-slate-800"></p>
+          </div>
+          <div class="bg-white/60 rounded-xl p-4 border border-purple-100/50">
+           <p class="text-sm font-semibold text-slate-600">Sexo</p>
+           <p id="resultado-sexo" class="mt-1 text-sm font-bold text-slate-800"></p>
+          </div>
+         </div>
+         <h4 class="text-lg font-bold bg-gradient-to-r from-slate-700 to-purple-700 bg-clip-text text-transparent mb-3">Resultado do Teste</h4>
+         <div class="bg-white/70 rounded-2xl p-6 border border-purple-200/50 shadow-lg backdrop-blur-sm">
+          <div class="flex items-center justify-between mb-4"><span class="text-sm font-semibold text-slate-700">Pontuação Total</span> <span id="resultado-pontuacao" class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"></span>
+          </div>
+          <div class="w-full bg-slate-200 rounded-full h-3 mb-4 overflow-hidden">
+           <div id="barra-progresso" class="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+          </div>
+          <p id="resultado-classificacao" class="text-sm text-slate-700 font-medium"></p>
+         </div>
+         <div class="mt-4">
+          <p class="text-xs text-slate-500 bg-white/40 rounded-lg p-2">Data do teste: <span id="resultado-data" class="font-semibold"></span></p>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div><!-- Diagnósticos Tab -->
+    <div id="content-diagnosticos" class="hidden px-4 py-6 sm:px-0">
+     <div class="bg-white/80 backdrop-blur-sm overflow-hidden shadow-2xl rounded-2xl border border-purple-100/50">
+      <div class="px-4 py-5 sm:p-6">
+       <h2 class="text-2xl font-bold bg-gradient-to-r from-slate-700 to-purple-700 bg-clip-text text-transparent mb-6">Diagnósticos e Recomendações Detalhadas</h2>
+       <div class="mb-6"><label for="select-paciente-diagnostico" class="block text-sm font-semibold text-slate-700 mb-2">Escolha o Paciente</label> <select id="select-paciente-diagnostico" class="block w-full border-purple-200 rounded-xl shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm px-4 py-3 border bg-white/70 backdrop-blur-sm transition-all duration-300"> <option value="">Selecione um paciente...</option> </select>
+       </div>
+       <div id="diagnostico-paciente" class="hidden"><!-- Análise Geral -->
+        <div class="bg-gradient-to-r from-purple-50/70 to-pink-50/70 rounded-2xl p-6 mb-6 border border-purple-200/50 backdrop-blur-sm shadow-lg">
+         <h3 class="text-2xl font-bold bg-gradient-to-r from-slate-700 to-purple-700 bg-clip-text text-transparent mb-4">📊 Análise Detalhada dos Hábitos de Vida</h3>
+         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-4">
+          <div class="bg-white/60 rounded-xl p-4 border border-purple-100/50">
+           <p class="text-sm font-semibold text-slate-600">Paciente</p>
+           <p id="diagnostico-nome" class="mt-1 text-lg font-bold text-slate-800"></p>
+          </div>
+          <div class="bg-white/60 rounded-xl p-4 border border-purple-100/50">
+           <p class="text-sm font-semibold text-slate-600">Status Geral de Saúde</p>
+           <p id="diagnostico-status" class="mt-1 text-lg font-bold"></p>
+          </div>
+          <div class="bg-white/60 rounded-xl p-4 border border-purple-100/50">
+           <p class="text-sm font-semibold text-slate-600">Pontuação Total</p>
+           <p id="diagnostico-pontuacao" class="mt-1 text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"></p>
+          </div>
+         </div>
+         <div class="bg-white/70 rounded-2xl p-6 border border-purple-200/50 backdrop-blur-sm shadow-lg">
+          <p class="text-sm font-bold text-slate-700 mb-3">🔬 Interpretação Científica:</p>
+          <p id="interpretacao-cientifica" class="text-sm text-slate-700 leading-relaxed"></p>
+         </div>
+        </div><!-- Áreas de Análise -->
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-6"><!-- Pontos Fortes -->
+         <div class="bg-gradient-to-br from-emerald-50/70 to-teal-50/70 border border-emerald-200/50 rounded-2xl p-6 backdrop-blur-sm shadow-lg">
+          <h4 class="text-xl font-bold bg-gradient-to-r from-emerald-700 to-teal-700 bg-clip-text text-transparent mb-4">✅ Pontos Fortes Identificados</h4>
+          <div id="pontos-fortes" class="space-y-3"></div>
+         </div><!-- Áreas de Melhoria -->
+         <div class="bg-gradient-to-br from-amber-50/70 to-orange-50/70 border border-amber-200/50 rounded-2xl p-6 backdrop-blur-sm shadow-lg">
+          <h4 class="text-xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent mb-4">⚠️ Áreas Prioritárias de Melhoria</h4>
+          <div id="areas-melhoria" class="space-y-3"></div>
+         </div>
+        </div><!-- Recomendações Personalizadas -->
+        <div class="bg-gradient-to-br from-blue-50/70 to-indigo-50/70 border border-blue-200/50 rounded-2xl p-6 mb-6 backdrop-blur-sm shadow-lg">
+         <h4 class="text-2xl font-bold bg-gradient-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent mb-4">💡 Recomendações Personalizadas Baseadas em Evidências</h4>
+         <p class="text-sm text-slate-700 mb-4 bg-white/50 p-4 rounded-xl border border-blue-100/50">Estas recomendações são baseadas em estudos científicos e diretrizes de saúde reconhecidas internacionalmente.</p>
+         <div id="recomendacoes" class="space-y-4"></div>
+        </div><!-- Plano de Ação -->
+        <div class="bg-gradient-to-br from-violet-50/70 to-purple-50/70 border border-violet-200/50 rounded-2xl p-6 mb-6 backdrop-blur-sm shadow-lg">
+         <h4 class="text-2xl font-bold bg-gradient-to-r from-violet-700 to-purple-700 bg-clip-text text-transparent mb-4">📋 Plano de Ação Personalizado (30 dias)</h4>
+         <p class="text-sm text-slate-700 mb-4 bg-white/50 p-4 rounded-xl border border-violet-100/50">Implementação gradual e sustentável das mudanças de hábitos:</p>
+         <div id="plano-acao" class="space-y-4"></div>
+        </div><!-- Indicadores de Risco -->
+        <div class="bg-gradient-to-br from-red-50/70 to-rose-50/70 border border-red-200/50 rounded-2xl p-6 backdrop-blur-sm shadow-lg">
+         <h4 class="text-xl font-bold bg-gradient-to-r from-red-700 to-rose-700 bg-clip-text text-transparent mb-4">🚨 Fatores de Risco Identificados</h4>
+         <div id="fatores-risco" class="space-y-2"></div>
+         <div class="mt-4 p-4 bg-white/60 rounded-xl border border-red-200/50 backdrop-blur-sm">
+          <p class="text-xs text-slate-700 leading-relaxed"><strong class="text-red-700">Importante:</strong> Este diagnóstico é baseado em questionário de hábitos e não substitui consulta médica profissional. Para avaliação completa da saúde, procure um profissional qualificado.</p>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </main>
+  </div>
+  <script>
+        // Configuração padrão
+        const defaultConfig = {
+            titulo_sistema: "Sistema de Teste de Hábitos",
+            instrucoes_teste: "Responda as perguntas sobre seus hábitos diários"
+        };
+
+        // Questões do teste
+        const questoes = [
+            {
+                pergunta: "Com que frequência você pratica exercícios físicos?",
+                opcoes: [
+                    { letra: "A", texto: "Diariamente", pontos: 5 },
+                    { letra: "B", texto: "3-4 vezes por semana", pontos: 4 },
+                    { letra: "C", texto: "1-2 vezes por semana", pontos: 3 },
+                    { letra: "D", texto: "Raramente ou nunca", pontos: 1 }
+                ]
+            },
+            {
+                pergunta: "Quantas horas de sono você tem por noite?",
+                opcoes: [
+                    { letra: "A", texto: "7-9 horas", pontos: 5 },
+                    { letra: "B", texto: "6-7 horas", pontos: 4 },
+                    { letra: "C", texto: "5-6 horas", pontos: 3 },
+                    { letra: "D", texto: "Menos de 5 horas", pontos: 1 }
+                ]
+            },
+            {
+                pergunta: "Com que frequência você consome frutas e vegetais?",
+                opcoes: [
+                    { letra: "A", texto: "Em todas as refeições", pontos: 5 },
+                    { letra: "B", texto: "2 vezes ao dia", pontos: 4 },
+                    { letra: "C", texto: "1 vez ao dia", pontos: 3 },
+                    { letra: "D", texto: "Raramente", pontos: 1 }
+                ]
+            },
+            {
+                pergunta: "Você bebe água suficiente durante o dia?",
+                opcoes: [
+                    { letra: "A", texto: "Mais de 2 litros", pontos: 5 },
+                    { letra: "B", texto: "1,5-2 litros", pontos: 4 },
+                    { letra: "C", texto: "1-1,5 litros", pontos: 3 },
+                    { letra: "D", texto: "Menos de 1 litro", pontos: 1 }
+                ]
+            },
+            {
+                pergunta: "Com que frequência você se sente estressado?",
+                opcoes: [
+                    { letra: "A", texto: "Nunca", pontos: 5 },
+                    { letra: "B", texto: "Raramente", pontos: 4 },
+                    { letra: "C", texto: "Às vezes", pontos: 3 },
+                    { letra: "D", texto: "Frequentemente ou sempre", pontos: 1 }
+                ]
+            },
+            {
+                pergunta: "Você tem tempo para hobbies e lazer?",
+                opcoes: [
+                    { letra: "A", texto: "Diariamente", pontos: 5 },
+                    { letra: "B", texto: "Algumas vezes na semana", pontos: 4 },
+                    { letra: "C", texto: "Nos fins de semana", pontos: 3 },
+                    { letra: "D", texto: "Raramente ou nunca", pontos: 1 }
+                ]
+            },
+            {
+                pergunta: "Com que frequência você usa dispositivos eletrônicos antes de dormir?",
+                opcoes: [
+                    { letra: "A", texto: "Nunca", pontos: 5 },
+                    { letra: "B", texto: "Raramente", pontos: 4 },
+                    { letra: "C", texto: "Às vezes", pontos: 3 },
+                    { letra: "D", texto: "Frequentemente ou sempre", pontos: 1 }
+                ]
+            },
+            {
+                pergunta: "Você mantém uma rotina regular de horários?",
+                opcoes: [
+                    { letra: "A", texto: "Sempre", pontos: 5 },
+                    { letra: "B", texto: "Na maioria das vezes", pontos: 4 },
+                    { letra: "C", texto: "Às vezes", pontos: 3 },
+                    { letra: "D", texto: "Raramente ou nunca", pontos: 1 }
+                ]
+            },
+            {
+                pergunta: "Com que frequência você socializa com amigos e família?",
+                opcoes: [
+                    { letra: "A", texto: "Diariamente", pontos: 5 },
+                    { letra: "B", texto: "Algumas vezes na semana", pontos: 4 },
+                    { letra: "C", texto: "Nos fins de semana", pontos: 3 },
+                    { letra: "D", texto: "Raramente ou nunca", pontos: 1 }
+                ]
+            },
+            {
+                pergunta: "Você pratica alguma técnica de relaxamento ou meditação?",
+                opcoes: [
+                    { letra: "A", texto: "Diariamente", pontos: 5 },
+                    { letra: "B", texto: "Algumas vezes na semana", pontos: 4 },
+                    { letra: "C", texto: "Ocasionalmente", pontos: 3 },
+                    { letra: "D", texto: "Raramente ou nunca", pontos: 1 }
+                ]
+            }
+        ];
+
+        // Estado da aplicação
+        let pacienteAtual = null;
+        let pacientes = [];
+        let currentRecordCount = 0;
+
+        // Handler para mudanças de dados
+        const dataHandler = {
+            onDataChanged(data) {
+                pacientes = data;
+                currentRecordCount = data.length;
+                atualizarSelectPacientes();
+            }
+        };
+
+        // Inicialização
+        async function init() {
+            // Inicializar Data SDK
+            const initResult = await window.dataSdk.init(dataHandler);
+            if (!initResult.isOk) {
+                console.error("Erro ao inicializar Data SDK");
+                return;
+            }
+
+            // Inicializar Element SDK
+            if (window.elementSdk) {
+                await window.elementSdk.init({
+                    defaultConfig,
+                    onConfigChange: async (config) => {
+                        document.getElementById('titulo-sistema').textContent = config.titulo_sistema || defaultConfig.titulo_sistema;
+                        document.getElementById('instrucoes-teste').textContent = config.instrucoes_teste || defaultConfig.instrucoes_teste;
+                    },
+                    mapToCapabilities: (config) => ({
+                        recolorables: [],
+                        borderables: [],
+                        fontEditable: undefined,
+                        fontSizeable: undefined
+                    }),
+                    mapToEditPanelValues: (config) => new Map([
+                        ["titulo_sistema", config.titulo_sistema || defaultConfig.titulo_sistema],
+                        ["instrucoes_teste", config.instrucoes_teste || defaultConfig.instrucoes_teste]
+                    ])
+                });
+            }
+
+            configurarEventos();
+            criarQuestoes();
+        }
+
+        function configurarEventos() {
+            // Navegação entre abas
+            document.getElementById('tab-cadastro').addEventListener('click', () => mostrarAba('cadastro'));
+            document.getElementById('tab-resultados').addEventListener('click', () => mostrarAba('resultados'));
+            document.getElementById('tab-diagnosticos').addEventListener('click', () => mostrarAba('diagnosticos'));
+
+            // Formulário de cadastro
+            document.getElementById('form-paciente').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await cadastrarPaciente();
+            });
+
+            // Formulário de teste
+            document.getElementById('form-teste').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await finalizarTeste();
+            });
+
+            // Seleção de paciente nos resultados
+            document.getElementById('select-paciente').addEventListener('change', mostrarResultadoPaciente);
+            
+            // Seleção de paciente nos diagnósticos
+            document.getElementById('select-paciente-diagnostico').addEventListener('change', mostrarDiagnosticoPaciente);
+        }
+
+        function mostrarAba(aba) {
+            // Atualizar tabs
+            document.querySelectorAll('[id^="tab-"]').forEach(tab => {
+                tab.className = "py-2 px-4 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300";
+            });
+            document.getElementById(`tab-${aba}`).className = "py-2 px-4 border-b-2 border-blue-500 font-medium text-sm text-blue-600";
+
+            // Mostrar conteúdo
+            document.querySelectorAll('[id^="content-"]').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(`content-${aba}`).classList.remove('hidden');
+        }
+
+        async function cadastrarPaciente() {
+            if (currentRecordCount >= 999) {
+                mostrarMensagem("Limite máximo de 999 pacientes atingido. Exclua alguns registros primeiro.", "erro");
+                return;
+            }
+
+            const formData = new FormData(document.getElementById('form-paciente'));
+            const nome = formData.get('nome');
+            const idade = parseInt(formData.get('idade'));
+            const sexo = formData.get('sexo');
+
+            pacienteAtual = {
+                id: Date.now().toString(),
+                nome,
+                idade,
+                sexo
+            };
+
+            // Mostrar seção de teste
+            document.getElementById('teste-habitos').classList.remove('hidden');
+            document.getElementById('form-paciente').reset();
+            
+            mostrarMensagem("Paciente cadastrado! Agora responda ao teste de hábitos.", "sucesso");
+        }
+
+        function criarQuestoes() {
+            const container = document.getElementById('questoes-container');
+            
+            questoes.forEach((questao, index) => {
+                const questaoDiv = document.createElement('div');
+                questaoDiv.className = "border border-purple-200/50 rounded-2xl p-6 bg-white/60 backdrop-blur-sm shadow-lg";
+                
+                questaoDiv.innerHTML = `
+                    <h4 class="font-bold text-slate-800 mb-4 text-lg">${index + 1}. ${questao.pergunta}</h4>
+                    <div class="space-y-3">
+                        ${questao.opcoes.map((opcao, opcaoIndex) => `
+                            <label class="flex items-center p-3 rounded-xl bg-white/50 border border-purple-100/50 hover:bg-purple-50/50 transition-all duration-300 cursor-pointer">
+                                <input type="radio" name="questao_${index}" value="${opcao.pontos}" data-letra="${opcao.letra}" required class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-purple-300">
+                                <span class="ml-3 text-sm text-slate-700 font-medium"><strong class="text-purple-700">${opcao.letra})</strong> ${opcao.texto}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                
+                container.appendChild(questaoDiv);
+            });
+        }
+
+        async function finalizarTeste() {
+            const formData = new FormData(document.getElementById('form-teste'));
+            let pontuacaoTotal = 0;
+            const respostas = [];
+
+            questoes.forEach((questao, index) => {
+                const resposta = formData.get(`questao_${index}`);
+                if (resposta) {
+                    pontuacaoTotal += parseInt(resposta);
+                    respostas.push({
+                        pergunta: questao.pergunta,
+                        pontos: parseInt(resposta)
+                    });
+                }
+            });
+
+            const pacienteCompleto = {
+                ...pacienteAtual,
+                respostas: JSON.stringify(respostas),
+                pontuacao: pontuacaoTotal,
+                data_teste: new Date().toISOString()
+            };
+
+            const btn = document.getElementById('btn-finalizar-teste');
+            btn.disabled = true;
+            btn.textContent = 'Salvando...';
+
+            const result = await window.dataSdk.create(pacienteCompleto);
+            
+            btn.disabled = false;
+            btn.textContent = 'Finalizar Teste';
+
+            if (result.isOk) {
+                mostrarMensagem("Teste finalizado e salvo com sucesso!", "sucesso");
+                document.getElementById('form-teste').reset();
+                document.getElementById('teste-habitos').classList.add('hidden');
+                pacienteAtual = null;
+            } else {
+                mostrarMensagem("Erro ao salvar o teste. Tente novamente.", "erro");
+            }
+        }
+
+        function atualizarSelectPacientes() {
+            const select = document.getElementById('select-paciente');
+            const selectDiagnostico = document.getElementById('select-paciente-diagnostico');
+            
+            select.innerHTML = '<option value="">Selecione um paciente...</option>';
+            selectDiagnostico.innerHTML = '<option value="">Selecione um paciente...</option>';
+            
+            pacientes.forEach(paciente => {
+                const option = document.createElement('option');
+                option.value = paciente.__backendId;
+                option.textContent = `${paciente.nome} - ${paciente.idade} anos`;
+                select.appendChild(option);
+                
+                const optionDiag = document.createElement('option');
+                optionDiag.value = paciente.__backendId;
+                optionDiag.textContent = `${paciente.nome} - ${paciente.idade} anos`;
+                selectDiagnostico.appendChild(optionDiag);
+            });
+        }
+
+        function mostrarResultadoPaciente() {
+            const selectPaciente = document.getElementById('select-paciente');
+            const pacienteId = selectPaciente.value;
+            
+            if (!pacienteId) {
+                document.getElementById('resultado-paciente').classList.add('hidden');
+                return;
+            }
+
+            const paciente = pacientes.find(p => p.__backendId === pacienteId);
+            if (!paciente) return;
+
+            // Preencher informações
+            document.getElementById('resultado-nome').textContent = paciente.nome;
+            document.getElementById('resultado-idade').textContent = `${paciente.idade} anos`;
+            document.getElementById('resultado-sexo').textContent = paciente.sexo;
+            document.getElementById('resultado-pontuacao').textContent = `${paciente.pontuacao}/50`;
+            
+            // Calcular porcentagem e classificação
+            const porcentagem = (paciente.pontuacao / 50) * 100;
+            document.getElementById('barra-progresso').style.width = `${porcentagem}%`;
+            
+            let classificacao = "";
+            if (paciente.pontuacao >= 40) {
+                classificacao = "Excelentes hábitos de vida! Continue assim.";
+            } else if (paciente.pontuacao >= 30) {
+                classificacao = "Bons hábitos, mas há espaço para melhorias.";
+            } else if (paciente.pontuacao >= 20) {
+                classificacao = "Hábitos regulares. Considere fazer algumas mudanças.";
+            } else {
+                classificacao = "Hábitos que precisam de atenção. Recomenda-se buscar orientação.";
+            }
+            
+            document.getElementById('resultado-classificacao').textContent = classificacao;
+            document.getElementById('resultado-data').textContent = new Date(paciente.data_teste).toLocaleDateString('pt-BR');
+            
+            document.getElementById('resultado-paciente').classList.remove('hidden');
+        }
+
+        function mostrarDiagnosticoPaciente() {
+            const selectPaciente = document.getElementById('select-paciente-diagnostico');
+            const pacienteId = selectPaciente.value;
+            
+            if (!pacienteId) {
+                document.getElementById('diagnostico-paciente').classList.add('hidden');
+                return;
+            }
+
+            const paciente = pacientes.find(p => p.__backendId === pacienteId);
+            if (!paciente) return;
+
+            // Analisar respostas
+            const respostas = JSON.parse(paciente.respostas);
+            const analise = analisarHabitosDetalhado(respostas, paciente.pontuacao, paciente.idade);
+            
+            // Preencher informações básicas
+            document.getElementById('diagnostico-nome').textContent = paciente.nome;
+            document.getElementById('diagnostico-pontuacao').textContent = `${paciente.pontuacao}/50 pontos`;
+            
+            // Status geral
+            const statusElement = document.getElementById('diagnostico-status');
+            if (paciente.pontuacao >= 40) {
+                statusElement.textContent = "Excelente";
+                statusElement.className = "mt-1 text-lg font-semibold text-green-600";
+            } else if (paciente.pontuacao >= 30) {
+                statusElement.textContent = "Bom";
+                statusElement.className = "mt-1 text-lg font-semibold text-blue-600";
+            } else if (paciente.pontuacao >= 20) {
+                statusElement.textContent = "Regular";
+                statusElement.className = "mt-1 text-lg font-semibold text-yellow-600";
+            } else {
+                statusElement.textContent = "Precisa Atenção";
+                statusElement.className = "mt-1 text-lg font-semibold text-red-600";
+            }
+
+            // Interpretação científica
+            document.getElementById('interpretacao-cientifica').textContent = analise.interpretacaoCientifica;
+
+            // Pontos fortes
+            const pontosFortes = document.getElementById('pontos-fortes');
+            pontosFortes.innerHTML = '';
+            analise.pontosFortes.forEach(ponto => {
+                const div = document.createElement('div');
+                div.className = "bg-white/70 p-4 rounded-xl border border-emerald-200/50 backdrop-blur-sm shadow-sm";
+                div.innerHTML = `<p class="text-sm text-emerald-800 font-medium leading-relaxed">${ponto}</p>`;
+                pontosFortes.appendChild(div);
+            });
+
+            // Áreas de melhoria
+            const areasMelhoria = document.getElementById('areas-melhoria');
+            areasMelhoria.innerHTML = '';
+            analise.areasMelhoria.forEach(area => {
+                const div = document.createElement('div');
+                div.className = "bg-white/70 p-4 rounded-xl border border-amber-200/50 backdrop-blur-sm shadow-sm";
+                div.innerHTML = `<p class="text-sm text-amber-800 font-medium leading-relaxed">${area}</p>`;
+                areasMelhoria.appendChild(div);
+            });
+
+            // Recomendações
+            const recomendacoes = document.getElementById('recomendacoes');
+            recomendacoes.innerHTML = '';
+            analise.recomendacoes.forEach(rec => {
+                const div = document.createElement('div');
+                div.className = "bg-white/70 p-6 rounded-2xl border border-blue-200/50 shadow-lg backdrop-blur-sm";
+                div.innerHTML = `
+                    <h5 class="font-bold bg-gradient-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent mb-3 text-lg">${rec.titulo}</h5>
+                    <p class="text-sm text-slate-700 leading-relaxed">${rec.descricao}</p>
+                `;
+                recomendacoes.appendChild(div);
+            });
+
+            // Plano de ação
+            const planoAcao = document.getElementById('plano-acao');
+            planoAcao.innerHTML = '';
+            analise.planoAcao.forEach((acao, index) => {
+                const div = document.createElement('div');
+                div.className = "flex items-start space-x-4 bg-white/70 p-5 rounded-2xl border border-violet-200/50 shadow-lg backdrop-blur-sm";
+                div.innerHTML = `
+                    <span class="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-violet-600 to-purple-600 text-white text-sm font-bold rounded-full flex items-center justify-center shadow-lg">${index + 1}</span>
+                    <div class="flex-1">
+                        <p class="text-sm font-bold bg-gradient-to-r from-violet-700 to-purple-700 bg-clip-text text-transparent mb-2">${acao.semana}</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">${acao.acao}</p>
+                    </div>
+                `;
+                planoAcao.appendChild(div);
+            });
+
+            // Fatores de risco
+            const fatoresRisco = document.getElementById('fatores-risco');
+            fatoresRisco.innerHTML = '';
+            analise.fatoresRisco.forEach(risco => {
+                const div = document.createElement('div');
+                div.className = "flex items-start space-x-2";
+                div.innerHTML = `
+                    <span class="text-red-600 font-bold">•</span>
+                    <p class="text-sm text-red-800">${risco}</p>
+                `;
+                fatoresRisco.appendChild(div);
+            });
+            
+            document.getElementById('diagnostico-paciente').classList.remove('hidden');
+        }
+
+        function analisarHabitosDetalhado(respostas, pontuacao, idade) {
+            const analise = {
+                pontosFortes: [],
+                areasMelhoria: [],
+                recomendacoes: [],
+                planoAcao: [],
+                fatoresRisco: [],
+                interpretacaoCientifica: ""
+            };
+
+            // Interpretação científica baseada na pontuação
+            const porcentagem = (pontuacao / 50) * 100;
+            if (porcentagem >= 80) {
+                analise.interpretacaoCientifica = `Excelente perfil de hábitos saudáveis (${porcentagem.toFixed(0)}%). Estudos mostram que pessoas com este perfil têm 40% menos risco de doenças crônicas e expectativa de vida 7-10 anos maior que a média populacional.`;
+            } else if (porcentagem >= 60) {
+                analise.interpretacaoCientifica = `Bom perfil de hábitos (${porcentagem.toFixed(0)}%). Com pequenos ajustes, pode alcançar o nível ótimo de saúde preventiva. Pesquisas indicam potencial de redução de 25-35% no risco de doenças cardiovasculares.`;
+            } else if (porcentagem >= 40) {
+                analise.interpretacaoCientifica = `Perfil moderado (${porcentagem.toFixed(0)}%). Há oportunidades significativas de melhoria. Implementar mudanças pode reduzir o risco de diabetes tipo 2 em até 58% e doenças cardíacas em 30%.`;
+            } else {
+                analise.interpretacaoCientifica = `Perfil de risco elevado (${porcentagem.toFixed(0)}%). Múltiplos fatores de risco identificados. Intervenção imediata pode prevenir complicações futuras e melhorar significativamente a qualidade de vida.`;
+            }
+
+            // Analisar cada área baseada nas respostas
+            respostas.forEach((resposta, index) => {
+                if (resposta.pontos >= 4) {
+                    // Pontos fortes detalhados
+                    switch(index) {
+                        case 0: analise.pontosFortes.push("Atividade física regular - Reduz risco cardiovascular em 35%, fortalece sistema imunológico e melhora saúde mental através da liberação de endorfinas"); break;
+                        case 1: analise.pontosFortes.push("Sono de qualidade - Permite recuperação celular adequada, consolidação da memória e regulação hormonal. Associado a 23% menos risco de obesidade"); break;
+                        case 2: analise.pontosFortes.push("Alimentação rica em nutrientes - Alto consumo de antioxidantes, fibras e vitaminas. Reduz inflamação sistêmica e risco de câncer em até 20%"); break;
+                        case 3: analise.pontosFortes.push("Hidratação adequada - Mantém função renal ótima, regula temperatura corporal e melhora performance cognitiva em 12-15%"); break;
+                        case 4: analise.pontosFortes.push("Gestão eficaz do estresse - Níveis controlados de cortisol protegem contra hipertensão, depressão e envelhecimento precoce"); break;
+                        case 5: analise.pontosFortes.push("Equilíbrio vida-lazer - Essencial para saúde mental, criatividade e prevenção de burnout. Associado a maior longevidade"); break;
+                        case 6: analise.pontosFortes.push("Higiene digital do sono - Preserva produção natural de melatonina, melhorando qualidade do sono em 37%"); break;
+                        case 7: analise.pontosFortes.push("Rotina estruturada - Reduz ansiedade, melhora produtividade e facilita manutenção de hábitos saudáveis a longo prazo"); break;
+                        case 8: analise.pontosFortes.push("Conexões sociais sólidas - Fortalece sistema imunológico, reduz risco de demência em 26% e aumenta expectativa de vida"); break;
+                        case 9: analise.pontosFortes.push("Práticas de relaxamento - Reduz pressão arterial, melhora qualidade do sono e diminui marcadores inflamatórios"); break;
+                    }
+                } else if (resposta.pontos <= 2) {
+                    // Áreas de melhoria com impactos específicos
+                    switch(index) {
+                        case 0: 
+                            analise.areasMelhoria.push("Sedentarismo - Aumenta risco de doenças cardiovasculares em 147%, diabetes tipo 2 em 112% e certos tipos de câncer");
+                            analise.fatoresRisco.push("Alto risco cardiovascular devido à inatividade física");
+                            break;
+                        case 1: 
+                            analise.areasMelhoria.push("Privação de sono - Compromete sistema imunológico, aumenta risco de obesidade em 89% e acidentes em 70%");
+                            analise.fatoresRisco.push("Função cognitiva comprometida e risco aumentado de acidentes");
+                            break;
+                        case 2: 
+                            analise.areasMelhoria.push("Deficiência nutricional - Baixa ingestão de antioxidantes e fibras aumenta risco de doenças crônicas e envelhecimento precoce");
+                            analise.fatoresRisco.push("Deficiências vitamínicas e maior suscetibilidade a infecções");
+                            break;
+                        case 3: 
+                            analise.areasMelhoria.push("Desidratação crônica - Pode causar fadiga persistente, dores de cabeça frequentes e comprometimento da função renal");
+                            analise.fatoresRisco.push("Risco de formação de cálculos renais e problemas cognitivos");
+                            break;
+                        case 4: 
+                            analise.areasMelhoria.push("Estresse crônico - Eleva cortisol constantemente, aumentando risco de hipertensão em 68% e depressão em 45%");
+                            analise.fatoresRisco.push("Alto risco de burnout, ansiedade e doenças psicossomáticas");
+                            break;
+                        case 5: 
+                            analise.areasMelhoria.push("Desequilíbrio trabalho-vida - Pode levar ao esgotamento mental, redução da criatividade e isolamento social");
+                            analise.fatoresRisco.push("Risco elevado de burnout e deterioração das relações pessoais");
+                            break;
+                        case 6: 
+                            analise.areasMelhoria.push("Exposição excessiva à luz azul - Interfere na produção de melatonina, prejudicando qualidade do sono em até 23%");
+                            analise.fatoresRisco.push("Distúrbios do ritmo circadiano e insônia crônica");
+                            break;
+                        case 7: 
+                            analise.areasMelhoria.push("Falta de rotina - Aumenta ansiedade, dificulta formação de hábitos saudáveis e reduz eficiência pessoal");
+                            analise.fatoresRisco.push("Maior propensão a transtornos de ansiedade e decisões impulsivas");
+                            break;
+                        case 8: 
+                            analise.areasMelhoria.push("Isolamento social - Aumenta risco de depressão em 132%, demência em 50% e mortalidade geral em 26%");
+                            analise.fatoresRisco.push("Alto risco de depressão, ansiedade e declínio cognitivo acelerado");
+                            break;
+                        case 9: 
+                            analise.areasMelhoria.push("Ausência de práticas de relaxamento - Mantém tensão muscular crônica e níveis elevados de hormônios do estresse");
+                            analise.fatoresRisco.push("Tensão muscular crônica e risco de hipertensão");
+                            break;
+                    }
+                }
+            });
+
+            // Gerar recomendações personalizadas baseadas na idade e problemas identificados
+            if (analise.areasMelhoria.some(area => area.includes("Sedentarismo"))) {
+                const recomendacaoExercicio = idade > 60 ? 
+                    "🏃‍♂️ Programa de Atividade Física para +60: INÍCIO: Caminhadas de 10-15 minutos, 3x/semana. PROGRESSÃO: Aumente gradualmente para 30 minutos diários. EXERCÍCIOS DE FORÇA: 2x/semana com pesos leves ou elásticos. EQUILÍBRIO: Tai Chi ou Yoga para prevenir quedas. BENEFÍCIOS: Reduz risco de fraturas em 68%, melhora independência funcional e qualidade de vida." :
+                    idade > 40 ?
+                    "🏃‍♂️ Programa de Atividade Física para +40: CARDIO: 150min/semana de atividade moderada (caminhada rápida, natação). FORÇA: 2-3x/semana exercícios com peso corporal ou academia. FLEXIBILIDADE: Alongamentos diários de 10 minutos. BENEFÍCIOS: Previne sarcopenia, mantém densidade óssea, reduz risco de diabetes tipo 2 em 58%." :
+                    "🏃‍♂️ Programa de Atividade Física Jovem Adulto: CARDIO: 75min/semana de atividade intensa ou 150min moderada. FORÇA: 3x/semana exercícios compostos (agachamento, flexão). ESPORTES: Atividades em grupo para motivação. BENEFÍCIOS: Estabelece base para saúde futura, melhora humor e performance acadêmica/profissional.";
+                
+                analise.recomendacoes.push({
+                    titulo: "Programa de Atividade Física Personalizado",
+                    descricao: recomendacaoExercicio
+                });
+            }
+
+            if (analise.areasMelhoria.some(area => area.includes("Privação de sono"))) {
+                analise.recomendacoes.push({
+                    titulo: "😴 Protocolo Científico de Recuperação do Sono",
+                    descricao: "HORÁRIO FIXO: Deite e levante no mesmo horário todos os dias (±30min). AMBIENTE: Quarto 18-21°C, escuro total, silencioso. ROTINA PRÉ-SONO: 1h antes - banho morno, leitura, meditação. EVITAR: Cafeína após 14h, telas 1h antes de dormir, exercícios 4h antes. SUPLEMENTAÇÃO NATURAL: Chá de camomila, magnésio (consulte médico). BENEFÍCIOS: Melhora memória 40%, fortalece imunidade, reduz risco Alzheimer."
+                });
+            }
+
+            if (analise.areasMelhoria.some(area => area.includes("Deficiência nutricional"))) {
+                analise.recomendacoes.push({
+                    titulo: "🥗 Plano Nutricional Anti-Inflamatório",
+                    descricao: "REGRA DO PRATO: 50% vegetais coloridos, 25% proteína magra, 25% carboidratos integrais. ANTIOXIDANTES: Frutas vermelhas, vegetais verde-escuros, nozes. ÔMEGA-3: Peixes 2x/semana, linhaça, chia. HIDRATAÇÃO: 35ml/kg peso + 500ml extra por hora de exercício. EVITAR: Ultraprocessados, açúcar refinado, gorduras trans. BENEFÍCIOS: Reduz inflamação 45%, melhora energia, fortalece sistema imunológico."
+                });
+            }
+
+            if (analise.areasMelhoria.some(area => area.includes("Estresse crônico"))) {
+                analise.recomendacoes.push({
+                    titulo: "🧘‍♀️ Programa Integrado de Gestão do Estresse",
+                    descricao: "RESPIRAÇÃO 4-7-8: 4seg inspirar, 7seg segurar, 8seg expirar (4 ciclos, 2x/dia). MINDFULNESS: 10-20min diários de meditação guiada (apps: Headspace, Calm). EXERCÍCIO: Atividade física regular reduz cortisol 68%. ORGANIZAÇÃO: Técnica Pomodoro, listas de prioridades. SONO: 7-9h/noite para recuperação hormonal. SOCIAL: Conversar com amigos/família reduz estresse 34%. BENEFÍCIOS: Reduz ansiedade, melhora foco, fortalece resiliência."
+                });
+            }
+
+            // Plano de ação personalizado baseado nas prioridades
+            const prioridadesMelhoria = analise.areasMelhoria.slice(0, 4);
+            
+            analise.planoAcao = [
+                { 
+                    semana: "Semana 1-2: Fundação", 
+                    acao: "Estabeleça horários fixos para dormir e acordar. Inicie com 15 minutos de caminhada diária. Beba 1 copo de água ao acordar e antes de cada refeição. Meta: criar consistência básica."
+                },
+                { 
+                    semana: "Semana 3-4: Expansão", 
+                    acao: "Aumente exercícios para 25-30 minutos. Adicione 2 porções de frutas/vegetais por dia. Pratique 5 minutos de respiração profunda antes de dormir. Meta: intensificar hábitos saudáveis."
+                },
+                { 
+                    semana: "Semana 5-6: Integração", 
+                    acao: "Inclua exercícios de força 2x/semana. Implemente 'detox digital' 1h antes de dormir. Agende tempo social com amigos/família. Meta: diversificar práticas saudáveis."
+                },
+                { 
+                    semana: "Semana 7-8: Consolidação", 
+                    acao: "Avalie progresso e ajuste metas. Mantenha consistência em todos os hábitos desenvolvidos. Planeje estratégias para manutenção a longo prazo. Meta: sustentabilidade."
+                }
+            ];
+
+            // Adicionar fatores de risco específicos por idade
+            if (idade > 50 && analise.areasMelhoria.length > 3) {
+                analise.fatoresRisco.push("Múltiplos fatores de risco em idade avançada - requer atenção médica preventiva");
+            }
+            if (idade < 30 && analise.areasMelhoria.some(area => area.includes("Sedentarismo"))) {
+                analise.fatoresRisco.push("Estabelecimento precoce de padrões sedentários - impacto cumulativo na saúde futura");
+            }
+
+            return analise;
+        }
+
+        function mostrarMensagem(texto, tipo) {
+            const mensagem = document.createElement('div');
+            mensagem.className = `fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 ${
+                tipo === 'sucesso' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'
+            }`;
+            mensagem.textContent = texto;
+            
+            document.body.appendChild(mensagem);
+            
+            setTimeout(() => {
+                mensagem.remove();
+            }, 3000);
+        }
+
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99773c4ff6116d4b',t:'MTc2MTk1NjUyMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
